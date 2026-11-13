@@ -61,8 +61,7 @@ DEEP_ROSE = "#8e2f56"
 
 # Builds a Page with the shared theme applied
 def themed_page(state: State, content: list) -> Page:
-    wrapper = Div(*content)
-    wrapper = change_background_color(wrapper, "#fff5f7")
+    wrapper = change_background_color(Div(*content), "#fff5f7")
     wrapper = change_color(wrapper, "#4a2b37")
     wrapper = change_text_font(wrapper, "Georgia, serif")
     wrapper = change_padding(wrapper, "16px 24px")
@@ -94,11 +93,9 @@ def page_title(title: str, subtitle: str = ""):
 def section_label(text: str):
     return change_color(bold(text), DEEP_ROSE)
 
-
 # White rounded-looking card with a soft border
 def card(*items):
-    box = Div(*items)
-    box = change_background_color(box, "#ffffff")
+    box = change_background_color(Div(*items), "#ffffff")
     box = change_padding(box, "14px 18px")
     box = change_margin(box, "12px 0")
     box = change_border(box, "solid 1px #e8c4d1")
@@ -107,8 +104,7 @@ def card(*items):
 
 # Soft highlighted banner for important info
 def banner(text: str):
-    box = Div(bold(text))
-    box = change_background_color(box, "#fde4ec")
+    box = change_background_color(Div(bold(text)), "#fde4ec")
     box = change_padding(box, "10px 16px")
     box = change_margin(box, "10px 0")
     box = change_text_align(box, "center")
@@ -304,6 +300,8 @@ def home_action(state: State, action: str,
             return home(state)
         state.previous_route = "home"
         return panic(state)
+    
+    return home(state)
 
 
 # Helper that builds one RecommendationData and adds it to the list
