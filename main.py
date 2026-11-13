@@ -1701,7 +1701,7 @@ set_site_information(
     author="Carter Hoatson",
     description="An secret event planner that caters to a diverse amount of things and has a panic button to hide the screen from anyone that you want",
     sources="BlockPy Workbook, Claude, Gemini",
-    planning=["plan.pdf", "design.pdf"],
+    planning=[],
     links=["https://github.com/your-username/your-repository"]
 )
 hide_debug_information()
