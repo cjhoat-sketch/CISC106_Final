@@ -1953,4 +1953,3 @@ start_server(State(
     error_message="",
     saved_events=[]
 ))
-
