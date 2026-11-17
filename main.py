@@ -56,59 +56,285 @@ class State:
 
 
 # ---------- LOOK AND FEEL ----------
+# Home-page colors kept as constants for anything that still uses them
 ROSE = "#b5446e"
 DEEP_ROSE = "#8e2f56"
 
-# Builds a Page with the shared theme applied
+# ---- Theme builder -------------------------------------------------------
+BODY_SERIF = "Georgia, 'Times New Roman', serif"
+HEAD_SERIF = "'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+BODY_SANS = "'Trebuchet MS', 'Segoe UI', sans-serif"
+HEAD_SANS = "'Gill Sans', 'Trebuchet MS', 'Segoe UI', sans-serif"
+HEAD_FUN = "'Trebuchet MS', 'Arial Rounded MT Bold', 'Segoe UI', sans-serif"
+
+# Builds one theme (a dictionary of colors, fonts and an ornament)
+def mk(bg, accent, deep, title, gold, petal, border, ornament,
+       text="#3a2a30", card_bg="#ffffff",
+       body=BODY_SERIF, head=HEAD_SERIF):
+    return {
+        "bg": bg, "text": text, "card_bg": card_bg,
+        "accent": accent, "deep": deep, "title": title,
+        "gold": gold, "petal": petal, "card_border": border,
+        "button_text": "#ffffff", "ornament": ornament,
+        "body_font": body, "head_font": head
+    }
+
+
+# Every theme in the site. Each planner has a base theme (used on its
+# question page), plus one theme for every option you can choose.
+THEMES = {
+    # ----- Home: romantic blush and rose -----
+    "home": mk("#fff0f4", "#b5446e", "#8e2f56", "#5c1a38", "#c9a24d",
+               "#fde4ec", "#ecc8d5", "\u2665  \u2766  \u2665",
+               text="#4a2b37"),
+
+    # ----- Honeymoon -----
+    # base / "Not sure yet": calm lagoon teal
+    "honeymoon": mk("#e8f8f6", "#1e9aa8", "#0f6b78", "#0b4a54", "#f08a5d",
+                    "#cdf0eb", "#a8e0da", "\u2740  \u2736  \u2740",
+                    text="#1f4a50"),
+    # Tropical beach: warm sand and turquoise water
+    "honeymoon_beach": mk("#fff4e0", "#0aa6b8", "#07707d", "#055760",
+                          "#ff7f50", "#ffe3b8", "#f3d09a",
+                          "\U0001F334  \U0001F30A  \U0001F334",
+                          text="#4a3a22", head=HEAD_SANS),
+    # Europe: stone, Mediterranean blue and gold
+    "honeymoon_europe": mk("#f3f0ea", "#2f5d9b", "#234574", "#162f55",
+                           "#c8a24a", "#e1e8f4", "#cfd7e6",
+                           "\u2726  \u269C  \u2726",
+                           text="#2c3446"),
+    # Mountains and adventure: forest green with sunset orange
+    "honeymoon_mountain": mk("#edf3ee", "#3d7a5f", "#2c5a45", "#1d3f30",
+                             "#e07a2f", "#d9eadf", "#b9d3c4",
+                             "\u25B2  \u2726  \u25B2",
+                             text="#26382f", head=HEAD_SANS),
+    # City and culture: twilight indigo with marquee gold
+    "honeymoon_city": mk("#eceef6", "#5159c4", "#373d99", "#262a6e",
+                         "#f2b705", "#dcdff5", "#c3c8ea",
+                         "\u25C6  \u2726  \u25C6",
+                         text="#2a2d48", head=HEAD_SANS),
+
+    # ----- Surprise party -----
+    # base: confetti purple
+    "party": mk("#f8efff", "#8e44ad", "#6c2f8a", "#4a1b66", "#f2a900",
+                "#f0d9ff", "#dcb8f0", "\u2605  \u2736  \u2605",
+                text="#3d2a4d", body=BODY_SANS, head=HEAD_FUN),
+    # Birthday: bubblegum pink and gold
+    "party_birthday": mk("#fff0f6", "#e0388a", "#b0206a", "#7d1249",
+                         "#f5b301", "#ffd9ea", "#f6b6d3",
+                         "\U0001F382  \U0001F388  \U0001F382",
+                         text="#4a2438", body=BODY_SANS, head=HEAD_FUN),
+    # Milestone: champagne gold
+    "party_milestone": mk("#fbf6e9", "#b8860b", "#7a5a06", "#4a3604",
+                          "#d4af37", "#f6ebc2", "#e5d29a",
+                          "\u2726  \u2605  \u2726",
+                          text="#403418"),
+    # Holiday: festive red and evergreen
+    "party_holiday": mk("#f2f8f0", "#b3232b", "#8a1a21", "#14532d",
+                        "#c9a227", "#fbe0dd", "#cde3c8",
+                        "\u2744  \u2726  \u2744",
+                        text="#27372b"),
+    # Graduation: royal blue and gold
+    "party_graduation": mk("#edf1fb", "#27408b", "#1c3070", "#121f4f",
+                           "#f2b705", "#dbe3f7", "#c0cdee",
+                           "\U0001F393  \u2605  \U0001F393",
+                           text="#232c4a"),
+
+    # ----- Date night -----
+    # base / Romantic dinner: candlelit wine (dark)
+    "datenight": mk("#2a1424", "#d94f7a", "#f4a6bf", "#ffd9e6", "#e8c07d",
+                    "#4d2440", "#6b3558", "\u2665  \u273F  \u2665",
+                    text="#f6e4ec", card_bg="#3b1c32"),
+    # Outdoor adventure: moss and sunrise
+    "datenight_outdoor": mk("#e9f2e1", "#4f7f3a", "#38602a", "#24421c",
+                            "#e58a2e", "#d6e8c8", "#b5d19f",
+                            "\u25B2  \U0001F332  \u25B2",
+                            text="#2a3a22", head=HEAD_SANS),
+    # Movie night: dark cinema with a red curtain
+    "datenight_movie": mk("#14151f", "#d62839", "#ff8a95", "#ffe3e6",
+                          "#f5c518", "#2a1c26", "#4a3040",
+                          "\U0001F3AC  \U0001F37F  \U0001F3AC",
+                          text="#ececf2", card_bg="#1f2030", head=HEAD_SANS),
+    # Fun activity: arcade coral and teal
+    "datenight_fun": mk("#fff3e6", "#ff6b35", "#c2410c", "#8a2e06",
+                        "#00b3a4", "#ffdcc2", "#f9c49c",
+                        "\u2605  \U0001F483  \u2605",
+                        text="#4a2a18", body=BODY_SANS, head=HEAD_FUN),
+    # Relaxing evening: soft sage and sand
+    "datenight_relax": mk("#f1f4ee", "#7d9a7a", "#546b52", "#38503a",
+                          "#c9a27a", "#e2ebdf", "#c7d6c3",
+                          "\u2740  \U0001F9D6  \u2740",
+                          text="#33423a")
+}
+
+# Which theme is active; set at the top of each page function
+ACTIVE_THEME = "home"
+
+# Picks the theme for the current page. Question pages use the planner's base
+# theme; results pages switch to the theme of the option that was chosen.
+def use_theme(state: State) -> None:
+    global ACTIVE_THEME
+    route = state.current_route
+    key = "home"
+
+    if route.startswith("honeymoon"):
+        key = "honeymoon"
+        if route == "honeymoon_res":
+            dest = state.honeymoon_dest
+            if "beach" in dest:
+                key = "honeymoon_beach"
+            elif "Europe" in dest:
+                key = "honeymoon_europe"
+            elif "Mountains" in dest:
+                key = "honeymoon_mountain"
+            elif "City" in dest:
+                key = "honeymoon_city"
+
+    elif route.startswith("party"):
+        key = "party"
+        if route == "party_res":
+            kind = state.party_type
+            if "Birthday" in kind:
+                key = "party_birthday"
+            elif "Milestone" in kind:
+                key = "party_milestone"
+            elif "Holiday" in kind:
+                key = "party_holiday"
+            elif "Graduation" in kind:
+                key = "party_graduation"
+
+    elif route.startswith("datenight"):
+        key = "datenight"
+        if route == "datenight_res":
+            act = state.date_activity
+            if "Outdoor" in act:
+                key = "datenight_outdoor"
+            elif "Movie" in act:
+                key = "datenight_movie"
+            elif "Fun" in act:
+                key = "datenight_fun"
+            elif "Relaxing" in act:
+                key = "datenight_relax"
+
+    ACTIVE_THEME = key
+
+
+def theme() -> dict:
+    return THEMES[ACTIVE_THEME]
+
+
+# Builds a Page with the active theme applied. The page color is also painted
+# far past the edges of the column (box-shadow) so the browser's white/grey
+# frame around the site takes on the same color as the website.
 def themed_page(state: State, content: list) -> Page:
-    wrapper = change_background_color(Div(*content), "#fff5f7")
-    wrapper = change_color(wrapper, "#4a2b37")
-    wrapper = change_text_font(wrapper, "Georgia, serif")
-    wrapper = change_padding(wrapper, "16px 24px")
+    use_theme(state)
+    t = theme()
+    column = Div(
+        *content,
+        style_max_width="760px",
+        style_margin="0 auto",
+        style_padding="24px 20px 40px 20px",
+        style_color=t["text"],
+        style_font_family=t["body_font"],
+        style_font_size="17px",
+        style_line_height="1.6"
+    )
+    wrapper = Div(
+        column,
+        style_background_color=t["bg"],
+        style_min_height="100vh",
+        style_box_shadow="0 0 0 100vmax " + t["bg"]
+    )
     return Page(state, [wrapper])
 
 
-# Rose-colored button (styled with Drafter's style_ keyword arguments)
+# Themed pill-shaped button with a soft shadow
 def rose_button(text: str, url, arguments=None):
+    t = theme()
+    look = dict(
+        style_background_color=t["accent"],
+        style_color=t["button_text"],
+        style_border="1px solid " + t["gold"],
+        style_border_radius="999px",
+        style_padding="9px 22px",
+        style_margin="6px 8px 6px 0",
+        style_font_family=t["body_font"],
+        style_font_size="15px",
+        style_letter_spacing="0.4px",
+        style_box_shadow="0 2px 8px rgba(0, 0, 0, 0.25)",
+        style_cursor="pointer"
+    )
     if arguments is None:
-        return Button(text, url,
-                      style_background_color=ROSE, style_color="white")
-    return Button(text, url, arguments,
-                  style_background_color=ROSE, style_color="white")
+        return Button(text, url, **look)
+    return Button(text, url, arguments, **look)
 
 
-# Centered title block with a subtitle and a divider
+# Centered title block: ornament, big title, italic subtitle, gold divider
 def page_title(title: str, subtitle: str = ""):
-    return change_text_align(
-        Div(
-            change_color(Header(title, 1), DEEP_ROSE),
-            italic(subtitle),
-            HorizontalRule()
-        ),
-        "center"
+    t = theme()
+    return Div(
+        Div(t["ornament"],
+            style_color=t["gold"], style_font_size="18px",
+            style_letter_spacing="6px"),
+        Div(title,
+            style_color=t["title"], style_font_family=t["head_font"],
+            style_font_size="36px", style_font_weight="bold",
+            style_letter_spacing="1px", style_margin="6px 0 4px 0"),
+        Div(italic(subtitle),
+            style_color=t["deep"], style_font_size="18px"),
+        Div("",
+            style_height="2px", style_width="140px",
+            style_margin="16px auto 10px auto",
+            style_background="linear-gradient(90deg, transparent, " + t["gold"] + ", transparent)"),
+        style_text_align="center",
+        style_margin_bottom="12px"
     )
 
 
 # Small colored section label
 def section_label(text: str):
-    return change_color(bold(text), DEEP_ROSE)
+    t = theme()
+    return Span(text,
+                style_color=t["deep"], style_font_weight="bold",
+                style_font_family=t["head_font"], style_font_size="18px")
 
-# White rounded-looking card with a soft border
+
+# Heading used for the title of a recommendation or saved event
+def card_heading(text: str, level: int):
+    t = theme()
+    return change_text_font(change_color(Header(text, level), t["deep"]),
+                            t["head_font"])
+
+
+# Themed card with an accent edge, rounded corners and a shadow
 def card(*items):
-    box = change_background_color(Div(*items), "#ffffff")
-    box = change_padding(box, "14px 18px")
-    box = change_margin(box, "12px 0")
-    box = change_border(box, "solid 1px #e8c4d1")
-    return box
+    t = theme()
+    return Div(
+        *items,
+        style_background_color=t["card_bg"],
+        style_color=t["text"],
+        style_padding="16px 22px",
+        style_margin="16px 0",
+        style_border="1px solid " + t["card_border"],
+        style_border_left="5px solid " + t["accent"],
+        style_border_radius="12px",
+        style_box_shadow="0 4px 14px rgba(0, 0, 0, 0.12)"
+    )
 
 
-# Soft highlighted banner for important info
+# Highlighted banner for important info
 def banner(text: str):
-    box = change_background_color(Div(bold(text)), "#fde4ec")
-    box = change_padding(box, "10px 16px")
-    box = change_margin(box, "10px 0")
-    box = change_text_align(box, "center")
-    return box
+    t = theme()
+    return Div(
+        bold(text),
+        style_background_color=t["petal"],
+        style_color=t["title"],
+        style_padding="12px 18px",
+        style_margin="14px 0",
+        style_border="1px dashed " + t["accent"],
+        style_border_radius="10px",
+        style_text_align="center"
+    )
 
 
 # Red-ish warning text
@@ -143,6 +369,7 @@ def index(state: State) -> Page:
 @route
 def home(state: State) -> Page:
     state.current_route = "home"
+    use_theme(state)
     warning = state.error_message
     state.error_message = ""
 
@@ -200,7 +427,7 @@ def saved_events_section(state: State):
         for i, event in enumerate(state.saved_events):
             items.append(
                 card(
-                    change_color(Header(event.title, 4), DEEP_ROSE),
+                    card_heading(event.title, 4),
                     Span(bold("When: "), event.day + " at " + event.time),
                     "\n",
                     Span(bold("Planner: "), event.planner),
@@ -316,6 +543,7 @@ def add_rec(state: State, title: str, category: str, price: str,
 @route
 def honeymoon(state: State) -> Page:
     state.current_route = "honeymoon"
+    use_theme(state)
     warning = state.error_message
     state.error_message = ""
 
@@ -557,6 +785,7 @@ def honeymoon_res(state: State, budget: str,
 @route
 def party(state: State) -> Page:
     state.current_route = "party"
+    use_theme(state)
     warning = state.error_message
     state.error_message = ""
 
@@ -764,6 +993,7 @@ def get_time_options() -> list[str]:
 @route
 def datenight(state: State) -> Page:
     state.current_route = "datenight"
+    use_theme(state)
     warning = state.error_message
     state.error_message = ""
 
@@ -1004,6 +1234,7 @@ def datenight_res(state: State, date_activity: str,
 
 # SHARED RECOMMENDATION PAGE
 def recommendation_page(state: State, heading: str) -> Page:
+    use_theme(state)
     warning = state.error_message
     state.error_message = ""
 
@@ -1053,7 +1284,7 @@ def recommendation_page(state: State, heading: str) -> Page:
     for index, recommendation in enumerate(state.recommendations):
         content.append(
             card(
-                change_color(Header(recommendation.title, 3), DEEP_ROSE),
+                card_heading(recommendation.title, 3),
                 Span(bold("Category: "), recommendation.category),
         "\n",
                 Span(bold("Estimated Cost: "), recommendation.price_estimate),
@@ -1722,3 +1953,4 @@ start_server(State(
     error_message="",
     saved_events=[]
 ))
+
